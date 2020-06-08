@@ -68,7 +68,7 @@ executable poly-lang
   build-depends:
       base          >=4.13 && <4.14
     , poly-source   >=0.1.0.0
-    , poly-lang     >=0.1.0.0
+    , poly-lang  
     , fused-effects ^>=1.0.2.0
 
 test-suite poly-lang-doctest
@@ -80,7 +80,7 @@ test-suite poly-lang-doctest
       base
     , doctest    >=0.7 && <1.0
     , QuickCheck
-    , poly-lang  >=0.1.0.0
+    , poly-lang
 
 test-suite poly-lang-tests
   import:         common
@@ -96,8 +96,8 @@ test-suite poly-lang-tests
       base
     , containers
     , transformers
-    , fused-effects  ^>= 1.0.2.0
-    , poly-lang      >= 0.1.0.0
+    , fused-effects
+    , poly-lang     
     , hedgehog       ^>= 1
     , hedgehog-fn    ^>= 1
     , tasty          ^>= 1.2
