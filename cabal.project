@@ -9,8 +9,4 @@ source-repository-package
   tag:      653cd886ef75039c82e70a96965c89b25ab5663c
 
 packages:
-  ./lib/poly-source/poly-source.cabal
-   
-  ./lib/fused-effects/fused-effects.cabal
-
-  poly-lang.cabal
+  ./poly-lang.cabal
