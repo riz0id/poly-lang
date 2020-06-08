@@ -21,8 +21,6 @@ import           Control.Algebra
 import           Control.Applicative
 import           Control.Carrier.Parser
 import           Control.Effect.Satisfy
-import Data.Maybe
-import           Control.Monad
 import           Data.Char
 import           Parser.Token
 
@@ -41,7 +39,7 @@ runLexer :: (Alternative m, Monad m) => String -> LexerC m k -> m k
 runLexer = runParser
 
 -- | @since 0.1.0.0
-stepLexer :: (Alternative m, Monad m) => String -> LexerC m k -> m (String, k)
+stepLexer :: String -> LexerC m k -> m (String, k)
 stepLexer = stepParser
 
 -- | @since 0.1.0.0
