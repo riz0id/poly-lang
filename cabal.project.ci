@@ -3,7 +3,7 @@ source-repository-package
   subdir:   lib
   type:     git
   location: https://github.com/riz0id/poly-source.git
-  tag:      0cb8e74c65f1bd776496c67a6a9b1d584b079896
+  tag:      0f1b4a23efeea84fb003076ac30ddb225d78b464
 
 source-repository-package
   subdir:   lib
