@@ -1,0 +1,32 @@
+#+TITLE: Syntax
+
+* Notation
+ - We denote a choice between tokens by `|`.
+ - We denote an optional term as `(...)`.
+ - An ordered group of terms is denoted `[...]`.
+ - We denote a lexical interval with '-'
+
+ - An ordered group of zero or more occurances is denoted `[...]*`.
+ - An ordered group of one or more occurances is denoted `(...)*`.
+
+* Syntax
+** Lambda
+```
+    (defn name [ [name]* ]
+      [sexp]*
+      )
+```
+** Let Bindings
+```
+   let [ (symbol sexp)* ]
+```
+
+* Direct Translation
+** Symbols
+`symbol := {a-z|A-Z}(a-Z|A-Z|0-9|-)*`
+
+** Atoms
+ `atom := name | number | paren | lam`
+
+** Application
+ `Apply := [atom]`

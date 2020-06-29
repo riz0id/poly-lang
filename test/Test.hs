@@ -1,9 +1,9 @@
 -- |
 
-import qualified Test.Lexer
+import qualified Test.Parser
 import           Test.Tasty      as Tasty
 
 main :: IO ()
 main = defaultMain $ testGroup "poly-lang-tests"
-  [ Test.Lexer.testTree
+  [ Test.Parser.testTree
   ]

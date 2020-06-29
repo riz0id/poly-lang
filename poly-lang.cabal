@@ -43,44 +43,48 @@ library
   default-language: Haskell2010
 
   exposed-modules:
-      Control.Effect.Satisfy
+      Syntax.Parse
+    , Syntax.SExp
+    , Syntax.SExp.Adornments
+    , Syntax.Token
+    , Syntax.Token.Symbol
+    , Syntax.Token.Keyword
+    , Control.Effect.Parser
+    , Control.Effect.Parser.Internal
     , Control.Carrier.Parser
-    , Parser.Lexer
-    , Parser.Token
+    , Data.Parser.Input
+    , Data.Parser.Err
+    , Data.Parser.Excerpt
+    , Data.Parser.Notice
+    , Data.Source.Loc
+    , Data.Source.Pos
+    , Data.Source.Range
+    , Data.Source.Span
+    , Data.Source.Delta
 
   build-depends:
       base          >=4.13 && <4.14
-    , poly-source   >=0.1.0.0
+    , text          >=1.2.4.0
+    , algebras      >=0.1.0.0
+    , containers    >=0.6.2.1
+    , prettyprinter >= 1.5.1
+    , lens          >= 4.19.2
     , fused-effects >=1.0.2.0
+    , transformers  >= 0.5.6.2
+    , prettyprinter-ansi-terminal ^>= 1.1
 
 executable polylang
   import:           common
-  main-is:          Main.hs
+  main-is:          src/Main.hs
   default-language: Haskell2010
-  hs-source-dirs:   src
-
-  other-modules:
-      Control.Effect.Satisfy
-    , Control.Carrier.Parser
-    , Parser.Lexer
-    , Parser.Token
 
   build-depends:
-      base          >=4.13 && <4.14
-    , poly-source   >=0.1.0.0
+      base          >= 4.13 && <4.14
+    , text          >= 1.2.4.0
+    , poly-source   >= 1.0.0.0
+    , poly-parse    >= 0.1.0.0
     , poly-lang  
     , fused-effects
-
-test-suite poly-lang-doctest
-  import:         common
-  type:           exitcode-stdio-1.0
-  main-is:        Doctest.hs
-  hs-source-dirs: test
-  build-depends:
-      base
-    , doctest    >=0.7 && <1.0
-    , QuickCheck
-    , poly-lang 
 
 test-suite poly-lang-tests
   import:         common
@@ -89,15 +93,17 @@ test-suite poly-lang-tests
   main-is:        Test.hs
 
   other-modules:
-      Test.Lexer
-    , Gen
+      Test.Parser
 
   build-depends:
       base
     , containers
     , transformers
     , fused-effects
-    , poly-lang     
+    , algebras      >=0.1.0.0
+    , poly-lang
+    , poly-source    >=1.0.0.0
+    , text           >=1.2.4.0
     , hedgehog       ^>= 1
     , hedgehog-fn    ^>= 1
     , tasty          ^>= 1.2
@@ -106,4 +112,4 @@ test-suite poly-lang-tests
 
 source-repository head
   type:     git
-  location: https://github.com/riz0id/poly-source
+  location: https://github.com/riz0id/poly-lang

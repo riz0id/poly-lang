@@ -1,7 +1,17 @@
 source-repository-package
   type:     git
   location: https://github.com/riz0id/poly-source.git
-  tag:      0f1b4a23efeea84fb003076ac30ddb225d78b464
+  tag:      369c454eae1beb8e938f8b39b3801a22eff0ff28
+
+source-repository-package
+  type:     git
+  location: https://github.com/riz0id/poly-parse.git
+  tag:      63bf8c3fa1dadff4c7cc97bf463bf8c89e59aadc
+
+source-repository-package
+  type:     git
+  location: https://github.com/riz0id/algebras.git
+  tag:      708d103196184271796f4a751f172a1f1565061d
 
 source-repository-package
   type:     git

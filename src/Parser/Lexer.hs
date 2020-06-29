@@ -1,5 +1,7 @@
-{-# LANGUAGE LambdaCase #-}
--- | Module    :  Parser.Lexer
+{-# LANGUAGE LambdaCase       #-}
+{-# LANGUAGE TypeApplications #-}
+
+-- | Module    :  Parser.Parser
 -- Copyright   :  (c) Jacob Leach, 2020 - 2022
 -- License     :  see LICENSE
 --
@@ -12,72 +14,58 @@
 -- @since 0.1.0.0
 
 module Parser.Lexer
-  ( stepLexer, runLexer, lexer
-    -- * Combinatorial functions
-  , symbol, leftParen, rightParen
+  (  tokLParen, tokRParen
+  , tokLBracket, tokRBracket
+  , tokDot
+  , tokSymbol, tokDigit
   ) where
 
 import           Control.Algebra
 import           Control.Applicative
-import           Control.Carrier.Parser
-import           Control.Effect.Satisfy
+import           Control.Effect.Parser
+import           Control.Monad
 import           Data.Char
+import           Data.Text
 import           Parser.Token
 
--- | Lexer over character.
---
--- @since 0.1.0.0
-type LexerC = ParseC Char
+tokLParen :: Has Parser sig m => m Parenthesis
+tokLParen = char '(' >> return LeftParenthesis
+{-# INLINE tokLParen #-}
 
--- | Satisfy over characters.
---
--- @since 0.1.0.0
-type Lexeme = Satisfy Char
+tokRParen :: Has Parser sig m => m Parenthesis
+tokRParen = char ')' >> return RightParenthesis
+{-# INLINE tokRParen #-}
 
--- | @since 0.1.0.0
-runLexer :: (Alternative m, Monad m) => String -> LexerC m k -> m k
-runLexer = runParser
+tokLBracket :: Has Parser sig m => m Bracket
+tokLBracket = char '[' >> return LeftBracket
+{-# INLINE tokLBracket #-}
 
--- | @since 0.1.0.0
-stepLexer :: String -> LexerC m k -> m (String, k)
-stepLexer = stepParser
+tokRBracket :: Has Parser sig m => m Bracket
+tokRBracket = char ']' >> return RightBracket
+{-# INLINE tokRBracket #-}
 
--- | @since 0.1.0.0
-lexer :: (Alternative m, Has Lexeme sig m) => m [Token]
-lexer = parens <|> endOfFile
+tokDot :: Has Parser sig m => m Token
+tokDot = char '.' >> return TokenDot
+{-# INLINE tokDot #-}
 
--- | @since 0.1.0
-parens :: (Alternative m, Has Lexeme sig m) => m [Token]
-parens = leftParen *> many (symbol <|> number <|> dot) <* rightParen
+tokEndOfFile :: Has Parser sig m => m Token
+tokEndOfFile = char '\0' >> return TokenEOF
+{-# INLINE tokEndOfFile #-}
 
--- | @since 0.1.0.0
-symbol :: (Alternative m, Has Lexeme sig m) => m Token
-symbol = TokSym <$> manyWhile isSym id
+tokDigit :: (Alternative m, Has Parser sig m) => m Number
+tokDigit = do
+  nats <- pack <$> some (passes isDigit)
+  decs <- option $ do
+    void (char '.')
+    pack <$> some (passes isDigit)
+  return $ case decs of
+    Just x  -> NumberDecimal nats x
+    Nothing -> NumberInteger nats
 
-isSym :: Char -> Bool
-isSym c = isAlpha c || isDigit c || c == '-'
-
--- | @since 0.1.0.0
-number :: (Alternative m, Has Lexeme sig m) => m Token
-number = TokNum <$> manyWhile isDigit id
-
--- | @since 0.1.0.0
-endOfFile :: Has Lexeme sig m => m [Token]
-endOfFile = do
-  t <- char '\0' (const TokEOF)
-  return [t]
-
--- | @since 0.1.0.0
-char :: Has Lexeme sig m => Char -> (Char -> Token) -> m Token
-char c = satisfy (c ==)
-
-dot :: Has Lexeme sig m => m Token
-dot = char '.' (const TokDot)
-
--- | @since 0.1.0.0
-leftParen :: Has Lexeme sig m => m Token
-leftParen = char '(' (const (TokParen ParenLeft))
-
--- | @since 0.1.0.0
-rightParen :: Has Lexeme sig m => m Token
-rightParen = char ')' (const (TokParen ParenRight))
+tokSymbol :: (Alternative m, Has Parser sig m) => m Token
+tokSymbol = do
+  x  <- passes isAlpha
+  xs <- many (passes (\c -> isDigit c || isAlpha c || c == '-'))
+  return $ case x : xs of
+    "defn" -> TokenKeyword DefnKW
+    other  -> TokenSym (pack other)
